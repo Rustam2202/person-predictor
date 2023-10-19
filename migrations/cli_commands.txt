@@ -1,0 +1,1 @@
+migrate -source file://./migrations -database postgres://postgres:password@localhost:5432/partycalc?sslmode=disable up
