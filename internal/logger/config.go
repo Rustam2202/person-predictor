@@ -1,8 +1,8 @@
 package logger
 
 type Config struct {
-	Encoding         string   `yaml:"encoding"`
-	Level            string   `yaml:"level"`
-	OutputPaths      []string `yaml:"outputPaths"`
-	ErrorOutputPaths []string `yaml:"errorOutputPaths"`
+	Encoding         string   `mapstructure:"ENCODING"`
+	Level            string   `mapstructure:"LEVEL"`
+	OutputPaths      []string `mapstructure:"OUTPUT_PATHS"`
+	ErrorOutputPaths []string `mapstructure:"ERROR_OUTPUT_PATHS"`
 }

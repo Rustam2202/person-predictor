@@ -6,7 +6,7 @@ import (
 
 var Logger *zap.Logger
 
-func MustConfigLogger(cfg Config) {
+func MustConfigLogger(cfg *Config) {
 	congig := zap.NewProductionConfig()
 	congig.Encoding = cfg.Encoding
 	err := congig.Level.UnmarshalText([]byte(cfg.Level))

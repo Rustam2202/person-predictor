@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS persons (
 );
 CREATE INDEX idx_name ON persons (name);
 CREATE INDEX idx_surname ON persons (surname);
-CREATE INDEX idx_age ON persons (age),
+CREATE INDEX idx_age ON persons (age);
 CREATE INDEX idx_country ON persons (country);

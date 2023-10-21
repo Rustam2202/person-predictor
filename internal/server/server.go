@@ -5,22 +5,20 @@ import (
 	"fmt"
 	"net/http"
 	"person-predicator/internal/logger"
-	"time"
+	"person-predicator/internal/server/handlers/persons"
 
 	"github.com/gin-gonic/gin"
-	"github.com/swaggo/swag/example/basic/docs"
 	"go.uber.org/zap"
 )
 
 type HTTP struct {
 	cfg           *Config
 	HTTPServer    *http.Server
-	deviceHandler *device.DeviceHandler
-	eventHandler  *event.EventHandler
+	personHandler *persons.PersonHandler
 }
 
-func NewHTTP(cfg *Config, dh *device.DeviceHandler, eh *event.EventHandler) *HTTP {
-	return &HTTP{cfg: cfg, deviceHandler: dh, eventHandler: eh}
+func NewHTTP(cfg *Config, ph *persons.PersonHandler) *HTTP {
+	return &HTTP{cfg: cfg, personHandler: ph}
 }
 
 // @title		Device Manager API
@@ -29,27 +27,18 @@ func NewHTTP(cfg *Config, dh *device.DeviceHandler, eh *event.EventHandler) *HTT
 // @BasePath
 func (s *HTTP) StartHTTP(ctx context.Context) {
 	r := gin.Default()
-	docs.SwaggerInfo.BasePath = "/"
-	docs.SwaggerInfo.Host = fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
+	// docs.SwaggerInfo.BasePath = "/"
+	// docs.SwaggerInfo.Host = fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 
 	{
 		r.GET("/", func(ctx *gin.Context) {
-			ctx.String(http.StatusOK, "Test response from Device Manager http server")
+			ctx.String(http.StatusOK, "Test response")
 		})
-		r.POST("/device", s.deviceHandler.Add)
-		r.GET("/device/:uuid", s.deviceHandler.Get)
-		r.GET("/device_lang/:language", s.deviceHandler.GetByLanguage)
-		r.GET("/device_geo", s.deviceHandler.GetByGeolocation)
-		r.GET("/device_email/:email", s.deviceHandler.GetByEmail)
-		r.PUT("/device_lang", s.deviceHandler.UpdateLanguage)
-		r.PUT("/device_geo", s.deviceHandler.UpdateGeolocation)
-		r.PUT("/device_email", s.deviceHandler.UpdateEmail)
-		r.DELETE("/device/:uuid", s.deviceHandler.Delete)
 
-		r.POST("/event", s.eventHandler.Add)
-		r.GET("/event", s.eventHandler.Get)
+		r.POST("/person", s.personHandler.Add)
+		r.GET("/device/:uuid", s.personHandler.Get)
 
-		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		// r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	s.HTTPServer = &http.Server{
@@ -57,20 +46,16 @@ func (s *HTTP) StartHTTP(ctx context.Context) {
 		Handler: r,
 	}
 
-	go func() {
-		defer wg.Done()
-		logger.Logger.Info("Starting HTTP server ...")
-		err := s.HTTPServer.ListenAndServe()
-		if err != nil && err != http.ErrServerClosed {
-			logger.Logger.Error("Failed to start HTTP server", zap.Error(err))
-		}
-	}()
-	<-ctx.Done()
-
-	shutdownCtx, cancel := context.WithTimeout(ctx, 1*time.Second)
-	defer cancel()
-	logger.Logger.Info("Shutting down HTTP server ...")
-	if err := s.HTTPServer.Shutdown(shutdownCtx); err != nil {
-		logger.Logger.Error("Failed to shutdown HTTP server", zap.Error(err))
+	logger.Logger.Info("Starting HTTP server ...")
+	err := s.HTTPServer.ListenAndServe()
+	if err != nil && err != http.ErrServerClosed {
+		logger.Logger.Error("Failed to start HTTP server", zap.Error(err))
 	}
+
+	// shutdownCtx, cancel := context.WithTimeout(ctx, 1*time.Second)
+	// defer cancel()
+	// logger.Logger.Info("Shutting down HTTP server ...")
+	// if err := s.HTTPServer.Shutdown(shutdownCtx); err != nil {
+	// 	logger.Logger.Error("Failed to shutdown HTTP server", zap.Error(err))
+	// }
 }

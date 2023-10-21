@@ -2,7 +2,6 @@ package config
 
 import (
 	"flag"
-	"fmt"
 	"person-predicator/internal/database"
 	"person-predicator/internal/logger"
 	"person-predicator/internal/server"
@@ -11,9 +10,9 @@ import (
 )
 
 type Config struct {
-	LoggerConfig *logger.Config
-	Database     *database.Config
-	Server       *server.Config
+	Logger   *logger.Config
+	Database *database.Config
+	Server   *server.Config
 }
 
 func MustLoadConfig() *Config {
@@ -23,40 +22,22 @@ func MustLoadConfig() *Config {
 
 	viper.Reset()
 	viper.AddConfigPath(*path)
-	viper.SetConfigType("yaml")
-	viper.SetConfigName("config")
-
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err.Error())
-	}
-	err = viper.Unmarshal(&cfg)
-	if err != nil {
-		panic(err.Error())
-	}
-
 	viper.SetConfigType("env")
 	viper.SetConfigName("app")
 	viper.AutomaticEnv()
-	// viper.SetEnvPrefix("server")
-	err = viper.ReadInConfig()
-	if err != nil {
+
+	if err := viper.ReadInConfig(); err != nil {
 		panic(err.Error())
 	}
-
-
-	// viper.Reset()
-	// viper.AddConfigPath(*path)
-	// viper.SetConfigName("app")
-	// viper.SetConfigType("env")
-
-
-	fmt.Println(viper.Get("HOST"))
-	fmt.Println(viper.GetInt("PORT"))
-	fmt.Println(viper.GetString("DATABASE_CONFIG_HOST"))
-	fmt.Println(viper.GetInt("DATABASE_CONFIG_PORT"))
-	fmt.Println(viper.GetString("DATABASE_CONFIG_NAME"))
+	if err := viper.Unmarshal(&cfg.Server); err != nil {
+		panic(err.Error())
+	}
+	if err := viper.Unmarshal(&cfg.Database); err != nil {
+		panic(err.Error())
+	}
+	if err := viper.Unmarshal(&cfg.Logger); err != nil {
+		panic(err.Error())
+	}
 
 	return &cfg
 }
