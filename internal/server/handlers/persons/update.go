@@ -34,7 +34,7 @@ func (h *PersonHandler) Update(ctx *gin.Context) {
 		// handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return
 	}
-	err = h.service.Update(ctx, req.Id, req.Name, req.Surname, req.Patronymic, req.Age, req.Gender, req.Country)
+	err = h.service.Update(req.Id, req.Name, req.Surname, req.Patronymic, req.Age, req.Gender, req.Country)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, nil)
 		// handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
@@ -58,22 +58,22 @@ type UpdateNameRequest struct {
 // @Failure		400		{object}	handlers.ErrorResponce
 // @Failure		500		{object}	handlers.ErrorResponce
 // @Router			/person [put]
-func (h *PersonHandler) UpdateName(ctx *gin.Context) {
-	var req UpdateNameRequest
-	err := ctx.ShouldBindJSON(&req)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, nil)
-		// handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
-		return
-	}
-	err = h.service.UpdateName(ctx, req.Id, req.Name)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
-		// handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
-		return
-	}
-	ctx.JSON(http.StatusOK, nil)
-}
+// func (h *PersonHandler) UpdateName(ctx *gin.Context) {
+// 	var req UpdateNameRequest
+// 	err := ctx.ShouldBindJSON(&req)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusBadRequest, nil)
+// 		// handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
+// 		return
+// 	}
+// 	err = h.service.UpdateName(ctx, req.Id, req.Name)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusInternalServerError, nil)
+// 		// handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
+// 		return
+// 	}
+// 	ctx.JSON(http.StatusOK, nil)
+// }
 
 type UpdateSurnameRequest struct {
 	Id      int64  `json:"id" example:"123456789"`
@@ -90,22 +90,22 @@ type UpdateSurnameRequest struct {
 // @Failure		400		{object}	handlers.ErrorResponce
 // @Failure		500		{object}	handlers.ErrorResponce
 // @Router			/person [put]
-func (h *PersonHandler) UpdateSurname(ctx *gin.Context) {
-	var req UpdateSurnameRequest
-	err := ctx.ShouldBindJSON(&req)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, nil)
-		// handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
-		return
-	}
-	err = h.service.UpdateSurname(ctx, req.Id, req.Surname)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
-		// handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
-		return
-	}
-	ctx.JSON(http.StatusOK, nil)
-}
+// func (h *PersonHandler) UpdateSurname(ctx *gin.Context) {
+// 	var req UpdateSurnameRequest
+// 	err := ctx.ShouldBindJSON(&req)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusBadRequest, nil)
+// 		// handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
+// 		return
+// 	}
+// 	err = h.service.UpdateSurname(ctx, req.Id, req.Surname)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusInternalServerError, nil)
+// 		// handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
+// 		return
+// 	}
+// 	ctx.JSON(http.StatusOK, nil)
+// }
 
 type UpdatePatronymicRequest struct {
 	Id         int64  `json:"id" example:"123456789"`
@@ -154,22 +154,22 @@ type UpdateAgeRequest struct {
 // @Failure		400		{object}	handlers.ErrorResponce
 // @Failure		500		{object}	handlers.ErrorResponce
 // @Router			/person [put]
-func (h *PersonHandler) UpdateAge(ctx *gin.Context) {
-	var req UpdateAgeRequest
-	err := ctx.ShouldBindJSON(&req)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, nil)
-		// handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
-		return
-	}
-	err = h.service.UpdateAge(ctx, req.Id, req.Age)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
-		// handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
-		return
-	}
-	ctx.JSON(http.StatusOK, nil)
-}
+// func (h *PersonHandler) UpdateAge(ctx *gin.Context) {
+// 	var req UpdateAgeRequest
+// 	err := ctx.ShouldBindJSON(&req)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusBadRequest, nil)
+// 		// handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
+// 		return
+// 	}
+// 	err = h.service.UpdateAge(ctx, req.Id, req.Age)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusInternalServerError, nil)
+// 		// handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
+// 		return
+// 	}
+// 	ctx.JSON(http.StatusOK, nil)
+// }
 
 type UpdateGenderRequest struct {
 	Id     int64  `json:"id" example:"123456789"`
@@ -218,19 +218,19 @@ type UpdateCountryRequest struct {
 // @Failure		400		{object}	handlers.ErrorResponce
 // @Failure		500		{object}	handlers.ErrorResponce
 // @Router			/person [put]
-func (h *PersonHandler) UpdateCountry(ctx *gin.Context) {
-	var req UpdateCountryRequest
-	err := ctx.ShouldBindJSON(&req)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, nil)
-		// handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
-		return
-	}
-	err = h.service.UpdateCountry(ctx, req.Id, req.Country)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
-		// handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
-		return
-	}
-	ctx.JSON(http.StatusOK, req)
-}
+// func (h *PersonHandler) UpdateCountry(ctx *gin.Context) {
+// 	var req UpdateCountryRequest
+// 	err := ctx.ShouldBindJSON(&req)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusBadRequest, nil)
+// 		// handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
+// 		return
+// 	}
+// 	err = h.service.UpdateCountry(ctx, req.Id, req.Country)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusInternalServerError, nil)
+// 		// handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
+// 		return
+// 	}
+// 	ctx.JSON(http.StatusOK, req)
+// }

@@ -21,58 +21,27 @@ func (r *PersonRepository) Create(person *domain.Person) error {
 	return nil
 }
 
-func (r *PersonRepository) GetByName(name string) ([]domain.Person, error) {
+func (r *PersonRepository) Get(filters map[string]interface{}, limit int) ([]domain.Person, error) {
 	var persons []domain.Person
-	result := r.Db.Gorm.Where("name=?", name).Find(&persons)
+	result := r.Db.Gorm.Where(filters).Limit(limit).Find(&persons)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return persons, nil
 }
 
-func (r *PersonRepository) GetBySurname(surname string) ([]domain.Person, error) {
-	var persons []domain.Person
-	result := r.Db.Gorm.Where("surname=?", surname).Find(&persons)
+func (r *PersonRepository) Update(person *domain.Person) error {
+	result := r.Db.Gorm.Save(person)
 	if result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
-	return persons, nil
-}
-
-func (r *PersonRepository) GetByAge(age int) ([]domain.Person, error) {
-	var persons []domain.Person
-	result := r.Db.Gorm.Where("age=?", age).Find(&persons)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return persons, nil
-}
-
-func (r *PersonRepository) GetByGender(gender string) ([]domain.Person, error) {
-	var persons []domain.Person
-	result := r.Db.Gorm.Where("gender=?", gender).Find(&persons)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return persons, nil
-}
-
-func (r *PersonRepository) GetByCountry(country string) ([]domain.Person, error) {
-	var persons []domain.Person
-	result := r.Db.Gorm.Where("country=?", country).Find(&persons)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return persons, nil
-}
-
-func (r *PersonRepository) Update(person domain.Person) error {
-	r.Db.Gorm.Model(&person).Updates(person)
 	return nil
 }
 
-func (r *PersonRepository) UpdateName(name string) error {
-	var person []domain.Person
-	r.Db.Gorm.Model(&person).Updates(domain.Person{Name: "John Doe", Age: 35})
+func (r *PersonRepository) Delete(id int64) error {
+	result := r.Db.Gorm.Delete(&domain.Person{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }

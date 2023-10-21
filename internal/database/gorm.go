@@ -13,13 +13,13 @@ type GORM struct {
 }
 
 func MustConnectToGormPostgres(cfg *Config) *GORM {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d",
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 		cfg.Host, cfg.User, cfg.Password, cfg.Name, cfg.Port)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed connection to database")
 	}
-	err = db.AutoMigrate(&domain.Person{})
+	err = db.Table("persons").AutoMigrate(&domain.Person{})
 	if err != nil {
 		panic("Failed to migrate table")
 	}

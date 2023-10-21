@@ -10,7 +10,9 @@ import (
 )
 
 type PersonRepository struct {
-	Db *database.Postgres
+	// Db *database.Postgres
+		Db *database.Postgres
+
 }
 
 func NewPersonRepository(db *database.Postgres) *PersonRepository {
