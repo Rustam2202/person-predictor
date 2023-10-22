@@ -1,0 +1,212 @@
+definitions:
+  domain.Person:
+    properties:
+      age:
+        type: integer
+      country:
+        type: string
+      gender:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      patronymic:
+        type: string
+      surname:
+        type: string
+    type: object
+  handlers.ErrorResponce:
+    properties:
+      code:
+        type: integer
+      error: {}
+      message:
+        type: string
+    type: object
+  persons.AddPersonRequest:
+    properties:
+      name:
+        example: Dmitriy
+        type: string
+      patronymic:
+        example: Vasilevich
+        type: string
+      surname:
+        example: Ushakov
+        type: string
+    type: object
+  persons.UpdatePersonRequest:
+    properties:
+      age:
+        example: 42
+        type: integer
+      country:
+        example: RU
+        type: string
+      gender:
+        example: male
+        type: string
+      id:
+        example: 123456789
+        type: integer
+      name:
+        example: Dmitriy
+        type: string
+      patronymic:
+        example: Vasilevich
+        type: string
+      surname:
+        example: Ushakov
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Device Manager API
+  version: "1.0"
+paths:
+  /person:
+    get:
+      consumes:
+      - application/json
+      description: Get a person from database
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Surname
+        in: path
+        name: surname
+        required: true
+        type: string
+      - description: Age
+        in: path
+        name: age
+        required: true
+        type: integer
+      - description: Gender
+        in: path
+        name: gender
+        required: true
+        type: integer
+      - description: Country
+        in: path
+        name: country
+        required: true
+        type: integer
+      - description: Max records count
+        in: path
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Person'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Get a person
+      tags:
+      - Person
+    post:
+      consumes:
+      - application/json
+      description: Add a new person to database
+      parameters:
+      - description: Add Person Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/persons.AddPersonRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Add a person
+      tags:
+      - Person
+    put:
+      consumes:
+      - application/json
+      description: Update a person in database
+      parameters:
+      - description: Update Person Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/persons.UpdatePersonRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Update a person
+      tags:
+      - Person
+  /person/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a person from database
+      parameters:
+      - description: Person Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponce'
+      summary: Delete a person
+      tags:
+      - Person
+swagger: "2.0"

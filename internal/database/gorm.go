@@ -19,7 +19,7 @@ func MustConnectToGormPostgres(cfg *Config) *GORM {
 	if err != nil {
 		panic("failed connection to database")
 	}
-	err = db.Table("persons").AutoMigrate(&domain.Person{})
+	err = db.AutoMigrate(&domain.Person{})
 	if err != nil {
 		panic("Failed to migrate table")
 	}

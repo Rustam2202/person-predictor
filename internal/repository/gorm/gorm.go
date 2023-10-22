@@ -23,7 +23,7 @@ func (r *PersonRepository) Create(person *domain.Person) error {
 
 func (r *PersonRepository) Get(filters map[string]interface{}, limit int) ([]domain.Person, error) {
 	var persons []domain.Person
-	result := r.Db.Gorm.Where(filters).Limit(limit).Find(&persons)
+	result := r.Db.Gorm.Where(filters).Find(&persons)
 	if result.Error != nil {
 		return nil, result.Error
 	}

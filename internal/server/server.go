@@ -4,10 +4,13 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"person-predicator/docs"
 	"person-predicator/internal/logger"
 	"person-predicator/internal/server/handlers/persons"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 )
 
@@ -21,24 +24,26 @@ func NewHTTP(cfg *Config, ph *persons.PersonHandler) *HTTP {
 	return &HTTP{cfg: cfg, personHandler: ph}
 }
 
-// @title		Device Manager API
-// @version	1.0
-// @description
-// @BasePath
+//	@title		Device Manager API
+//	@version	1.0
+//	@description
+//	@BasePath
 func (s *HTTP) StartHTTP(ctx context.Context) {
 	r := gin.Default()
-	// docs.SwaggerInfo.BasePath = "/"
-	// docs.SwaggerInfo.Host = fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Host = fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 
 	{
-		r.GET("/", func(ctx *gin.Context) {
-			ctx.String(http.StatusOK, "Test response")
-		})
+		// r.GET("/", func(ctx *gin.Context) {
+		// 	ctx.String(http.StatusOK, "Test response")
+		// })
 
 		r.POST("/person", s.personHandler.Add)
-		r.GET("/device/:uuid", s.personHandler.Get)
+		r.GET("/person", s.personHandler.Get)
+		r.PUT("/person", s.personHandler.Update)
+		r.DELETE("/person", s.personHandler.Delete)
 
-		// r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	s.HTTPServer = &http.Server{

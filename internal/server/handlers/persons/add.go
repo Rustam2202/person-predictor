@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"person-predicator/internal/server/handlers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,44 +15,52 @@ type AddPersonRequest struct {
 	Patronymic string `json:"patronymic" example:"Vasilevich"`
 }
 
-// @Summary		Add a person
-// @Description	Add a new person to database
-// @Tags			Person
-// @Accept			json
-// @Produce		json
-// @Param			request	body		AddPersonRequest	true	"Add Person Request"
-// @Success		201		{object}	domain.Person
-// @Failure		400		{object}	handlers.ErrorResponce
-// @Failure		500		{object}	handlers.ErrorResponce
-// @Router			/person [post]
+//	@Summary		Add a person
+//	@Description	Add a new person to database
+//	@Tags			Person
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body	AddPersonRequest	true	"Add Person Request"
+//	@Success		201
+//	@Failure		400	{object}	handlers.ErrorResponce
+//	@Failure		500	{object}	handlers.ErrorResponce
+//	@Failure		502	{object}	handlers.ErrorResponce
+//	@Router			/person [post]
 func (h *PersonHandler) Add(ctx *gin.Context) {
 	var req AddPersonRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
-			// handlers.ErrorResponce{Message: "Failed to parse request", Error: err}
-			nil,
-		)
+			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return
 	}
 
 	age, err := getAge(req.Name)
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway,
+			handlers.ErrorResponce{Message: "Failed to get age predict", Error: err})
+	}
 	gender, err := getGender(req.Name)
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway,
+			handlers.ErrorResponce{Message: "Failed to get gender predict", Error: err})
+	}
 	country, err := getCountry(req.Name)
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway,
+			handlers.ErrorResponce{Message: "Failed to get country predict", Error: err})
+	}
 
 	_, err = h.service.NewPerson(ctx, req.Name, req.Surname, req.Patronymic, age, gender, country)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
-			// handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err}
-			nil,
-		)
+			handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err})
 		return
 	}
 	ctx.JSON(http.StatusCreated, nil)
 }
 
 type ageResponse struct {
-	// Name string `json:"name"`
 	Age int `json:"age"`
 }
 
