@@ -13,13 +13,13 @@ import (
 //	@Tags			Person
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		int		true	"Id"
-//	@Param			name	path		string	true	"Name"
-//	@Param			surname	path		string	true	"Surname"
-//	@Param			age		path		int		true	"Age"
-//	@Param			gender	path		int		true	"Gender"
-//	@Param			country	path		int		true	"Country"
-//	@Param			limit	path		int		true	"Max records count"
+//	@Param			id		path		int		false	"Id"
+//	@Param			name	path		string	false	"Name"
+//	@Param			surname	path		string	false	"Surname"
+//	@Param			age		path		int		false	"Age"
+//	@Param			gender	path		int		false	"Gender"
+//	@Param			country	path		int		false	"Country"
+//	@Param			limit	path		int		false	"Max records count"
 //	@Success		200		{object}	domain.Person
 //	@Failure		400		{object}	handlers.ErrorResponce
 //	@Failure		500		{object}	handlers.ErrorResponce
@@ -77,7 +77,7 @@ func (h *PersonHandler) Get(ctx *gin.Context) {
 		filters["country"] = country
 	}
 
-	per, err := h.service.Get(filters, int(limit))
+	per, err := h.service.Get(ctx, filters, int(limit))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			handlers.ErrorResponce{Message: "Failed to get a person from database", Error: err})

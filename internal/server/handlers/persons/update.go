@@ -35,7 +35,7 @@ func (h *PersonHandler) Update(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return
 	}
-	err = h.service.Update(req.Id, req.Name, req.Surname, req.Patronymic, req.Age, req.Gender, req.Country)
+	err = h.service.Update(ctx, req.Id, req.Name, req.Surname, req.Patronymic, req.Age, req.Gender, req.Country)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})

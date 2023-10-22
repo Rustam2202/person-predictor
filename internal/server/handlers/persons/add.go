@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"person-predicator/internal/logger"
 	"person-predicator/internal/server/handlers"
 
 	"github.com/gin-gonic/gin"
@@ -57,6 +58,8 @@ func (h *PersonHandler) Add(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to add a new person to database", Error: err})
 		return
 	}
+	logger.Logger.Info("Person added")
+
 	ctx.JSON(http.StatusCreated, nil)
 }
 

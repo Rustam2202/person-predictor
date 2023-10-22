@@ -74,37 +74,30 @@ paths:
       - description: Id
         in: path
         name: id
-        required: true
         type: integer
       - description: Name
         in: path
         name: name
-        required: true
         type: string
       - description: Surname
         in: path
         name: surname
-        required: true
         type: string
       - description: Age
         in: path
         name: age
-        required: true
         type: integer
       - description: Gender
         in: path
         name: gender
-        required: true
         type: integer
       - description: Country
         in: path
         name: country
-        required: true
         type: integer
       - description: Max records count
         in: path
         name: limit
-        required: true
         type: integer
       produces:
       - application/json
