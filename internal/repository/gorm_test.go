@@ -1,37 +1,38 @@
 package repository
 
 import (
+	"context"
+	"fmt"
 	"person-predicator/internal/domain"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"gorm.io/gorm"
 )
 
 type MockPersonRepository struct {
 	mock.Mock
 }
 
-func (m *MockPersonRepository) Create(person *domain.Person) error {
-	args := m.Called(person)
+func (m *MockPersonRepository) Create(ctx context.Context, person *domain.Person) error {
+	args := m.Called(ctx, person)
 	return args.Error(0)
 }
 
 func TestCreate(t *testing.T) {
-	repo := new(MockPersonRepository)
+	ctx := context.Background()
+	repo := &MockPersonRepository{}
 	person := &domain.Person{
 		Name:    "John",
 		Surname: "Doe",
 	}
 	repo.On("Create", person).Return(nil)
-	err := repo.Create(person)
+	err := repo.Create(ctx, person)
 	repo.AssertCalled(t, "Create", person)
 	assert.NoError(t, err)
 
-	// expectedError := fmt.Errorf("failed to create person")
-	repo.On("Create", person).Return(gorm.ErrNotImplemented)
-	err = repo.Create(person)
-	assert.EqualError(t, err, gorm.ErrNotImplemented.Error())
-
+	repo.On("Create", mock.Anything, person).Return(fmt.Errorf("database error")) // Error case
+	err = repo.Create(ctx, person)
+	assert.Error(t, err)
+	assert.EqualError(t, err, "database error")
 }
