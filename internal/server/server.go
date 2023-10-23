@@ -7,6 +7,8 @@ import (
 	"person-predicator/docs"
 	"person-predicator/internal/logger"
 	"person-predicator/internal/server/handlers/persons"
+	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -24,24 +26,20 @@ func NewHTTP(cfg *Config, ph *persons.PersonHandler) *HTTP {
 	return &HTTP{cfg: cfg, personHandler: ph}
 }
 
-//	@title		Device Manager API
-//	@version	1.0
-//	@description
-//	@BasePath
-func (s *HTTP) StartHTTP(ctx context.Context) {
+// @title		Device Manager API
+// @version	1.0
+// @description
+// @BasePath
+func (s *HTTP) StartHTTP(ctx context.Context, wg *sync.WaitGroup) {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/"
 	docs.SwaggerInfo.Host = fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 
 	{
-		// r.GET("/", func(ctx *gin.Context) {
-		// 	ctx.String(http.StatusOK, "Test response")
-		// })
-
 		r.POST("/person", s.personHandler.Add)
 		r.GET("/person", s.personHandler.Get)
 		r.PUT("/person", s.personHandler.Update)
-		r.DELETE("/person", s.personHandler.Delete)
+		r.DELETE("/person/:id", s.personHandler.Delete)
 
 		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
@@ -51,16 +49,20 @@ func (s *HTTP) StartHTTP(ctx context.Context) {
 		Handler: r,
 	}
 
-	logger.Logger.Info("Starting HTTP server ...")
-	err := s.HTTPServer.ListenAndServe()
-	if err != nil && err != http.ErrServerClosed {
-		logger.Logger.Error("Failed to start HTTP server", zap.Error(err))
-	}
+	go func() {
+		defer wg.Done()
+		logger.Logger.Info("Starting HTTP server ...")
+		err := s.HTTPServer.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			logger.Logger.Error("Failed to start HTTP server", zap.Error(err))
+		}
+	}()
+	<-ctx.Done()
 
-	// shutdownCtx, cancel := context.WithTimeout(ctx, 1*time.Second)
-	// defer cancel()
-	// logger.Logger.Info("Shutting down HTTP server ...")
-	// if err := s.HTTPServer.Shutdown(shutdownCtx); err != nil {
-	// 	logger.Logger.Error("Failed to shutdown HTTP server", zap.Error(err))
-	// }
+	shutdownCtx, cancel := context.WithTimeout(ctx, 1*time.Second)
+	defer cancel()
+	logger.Logger.Info("Gracefully shutting down HTTP server ...")
+	if err := s.HTTPServer.Shutdown(shutdownCtx); err != nil {
+		logger.Logger.Error("Failed to shutdown HTTP server", zap.Error(err))
+	}
 }

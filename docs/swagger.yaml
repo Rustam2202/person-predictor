@@ -72,31 +72,31 @@ paths:
       description: Get a person from database
       parameters:
       - description: Id
-        in: path
+        in: query
         name: id
         type: integer
       - description: Name
-        in: path
+        in: query
         name: name
         type: string
       - description: Surname
-        in: path
+        in: query
         name: surname
         type: string
       - description: Age
-        in: path
+        in: query
         name: age
         type: integer
       - description: Gender
-        in: path
+        in: query
         name: gender
-        type: integer
+        type: string
       - description: Country
-        in: path
+        in: query
         name: country
-        type: integer
+        type: string
       - description: Max records count
-        in: path
+        in: query
         name: limit
         type: integer
       produces:
@@ -182,7 +182,7 @@ paths:
       description: Delete a person from database
       parameters:
       - description: Person Id
-        in: path
+        in: query
         name: id
         required: true
         type: integer

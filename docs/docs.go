@@ -34,43 +34,43 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Id",
                         "name": "id",
-                        "in": "path"
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "Name",
                         "name": "name",
-                        "in": "path"
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "Surname",
                         "name": "surname",
-                        "in": "path"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "description": "Age",
                         "name": "age",
-                        "in": "path"
+                        "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Gender",
                         "name": "gender",
-                        "in": "path"
+                        "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Country",
                         "name": "country",
-                        "in": "path"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "description": "Max records count",
                         "name": "limit",
-                        "in": "path"
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -201,7 +201,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Person Id",
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],

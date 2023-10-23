@@ -2,6 +2,7 @@ package persons
 
 import (
 	"net/http"
+	"person-predicator/internal/logger"
 	"person-predicator/internal/server/handlers"
 	"strconv"
 
@@ -13,7 +14,7 @@ import (
 //	@Tags			Person
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path	int	true	"Person Id"
+//	@Param			id	query	int	true	"Person Id"
 //	@Success		200
 //	@Failure		400	{object}	handlers.ErrorResponce
 //	@Failure		500	{object}	handlers.ErrorResponce
@@ -32,5 +33,6 @@ func (h *PersonHandler) Delete(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to delete a person from database", Error: err})
 		return
 	}
+	logger.Logger.Info("Person deleted")
 	ctx.Status(http.StatusOK)
 }

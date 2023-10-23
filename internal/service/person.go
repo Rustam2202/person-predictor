@@ -9,6 +9,7 @@ type PersonRepository interface {
 	Create(context.Context, *domain.Person) error
 	Get(ctx context.Context, filters map[string]interface{}, limit int) ([]domain.Person, error)
 	Update(context.Context, *domain.Person) error
+	// Update(context.Context, map[string]interface{}) error
 	Delete(context.Context, int64) error
 }
 

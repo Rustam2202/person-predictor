@@ -11,13 +11,13 @@ func MustConfigLogger(cfg *Config) {
 	congig.Encoding = cfg.Encoding
 	err := congig.Level.UnmarshalText([]byte(cfg.Level))
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 	congig.OutputPaths = cfg.OutputPaths
 	congig.ErrorOutputPaths = cfg.ErrorOutputPaths
 	congig.EncoderConfig = zap.NewProductionEncoderConfig()
 	Logger, err = congig.Build()
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 }

@@ -12,33 +12,24 @@ import (
 )
 
 func TestDelete(t *testing.T) {
-	// Create a new Gin router
 	router := gin.Default()
 
-	// Create a mock service
 	mockService := &MockPersonService{}
 
-	// Create a test handler instance
 	handler := &PersonHandler{
 		service: &service.PersonService{},
 	}
 
-	// Define your API endpoint and attach the handler
-	router.DELETE("/users", handler.Delete)
+	router.DELETE("/person", handler.Delete)
 
-	// Create a test request to the API endpoint
-	req, _ := http.NewRequest(http.MethodDelete, "/users?id=123", nil)
+	req, _ := http.NewRequest(http.MethodDelete, "/person?id=123", nil)
 
-	// Create a response recorder to capture the response
 	recorder := httptest.NewRecorder()
 
-	// Serve the request using the router
 	router.ServeHTTP(recorder, req)
 
-	// Assert the response status code
 	assert.Equal(t, http.StatusOK, recorder.Code)
 
-	// Assert the service method calls
 	assert.True(t, mockService.DeleteCalled)
 	assert.Equal(t, int64(123), mockService.DeleteID)
 }

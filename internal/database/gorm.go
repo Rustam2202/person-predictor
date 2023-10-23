@@ -17,11 +17,11 @@ func MustConnectToGormPostgres(cfg *Config) *GORM {
 		cfg.Host, cfg.User, cfg.Password, cfg.Name, cfg.Port)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("failed connection to database")
+		panic(err)
 	}
 	err = db.AutoMigrate(&domain.Person{})
 	if err != nil {
-		panic("Failed to migrate table")
+		panic(err)
 	}
 	return &GORM{Gorm: db}
 }

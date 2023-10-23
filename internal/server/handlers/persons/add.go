@@ -52,6 +52,10 @@ func (h *PersonHandler) Add(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to get country predict", Error: err})
 	}
 
+	// age := 42
+	// gender := "male"
+	// country := "RU"
+
 	_, err = h.service.NewPerson(ctx, req.Name, req.Surname, req.Patronymic, age, gender, country)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,

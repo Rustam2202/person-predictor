@@ -6,7 +6,7 @@ build:
 swag:
 	swag fmt
 	swag init -g ./internal/server/server.go
-	npx @redocly/cli build-docs ./docs/swagger.json -o ./docs/index.html
+# npx @redocly/cli build-docs ./docs/swagger.json -o ./docs/index.html
 
 lint:
 	golangci-lint run
