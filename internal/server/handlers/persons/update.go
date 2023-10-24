@@ -18,16 +18,16 @@ type UpdatePersonRequest struct {
 	Country    string `json:"country" example:"RU"`
 }
 
-// @Summary		Update a person
-// @Description	Update a person in database
-// @Tags			Person
-// @Accept			json
-// @Produce		json
-// @Param			request	body	UpdatePersonRequest	true	"Update Person Request"
-// @Success		200
-// @Failure		400	{object}	handlers.ErrorResponce
-// @Failure		500	{object}	handlers.ErrorResponce
-// @Router			/person [put]
+//	@Summary		Update a person
+//	@Description	Update a person in database
+//	@Tags			Person
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body	UpdatePersonRequest	true	"Update Person Request"
+//	@Success		200
+//	@Failure		400	{object}	handlers.ErrorResponce
+//	@Failure		500	{object}	handlers.ErrorResponce
+//	@Router			/person [put]
 func (h *PersonHandler) Update(ctx *gin.Context) {
 	var req UpdatePersonRequest
 	err := ctx.ShouldBindJSON(&req)
@@ -48,7 +48,7 @@ func (h *PersonHandler) Update(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Error with update a person in database", Error: err})
 		return
 	}
-	logger.Logger.Debug("Person updated")
+	logger.Logger.Info("Person updated")
 
 	ctx.JSON(http.StatusOK, nil)
 }

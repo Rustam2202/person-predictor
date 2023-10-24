@@ -27,6 +27,11 @@ func (h *PersonHandler) Delete(ctx *gin.Context) {
 			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return
 	}
+	if id <= 0 {
+		ctx.JSON(http.StatusBadRequest,
+			handlers.ErrorResponce{Message: "Incorrect ID", Error: err})
+		return
+	}
 	err = h.service.Delete(ctx, id)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,

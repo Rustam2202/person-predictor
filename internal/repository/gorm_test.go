@@ -2,38 +2,72 @@ package repository
 
 import (
 	"context"
-	"fmt"
+	"database/sql/driver"
+	"person-predicator/internal/database"
 	"person-predicator/internal/domain"
+	"person-predicator/internal/logger"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
-
-type MockPersonRepository struct {
-	mock.Mock
-}
-
-func (m *MockPersonRepository) Create(ctx context.Context, person *domain.Person) error {
-	args := m.Called(person)
-	return args.Error(0)
-}
 
 func TestCreate(t *testing.T) {
 	ctx := context.Background()
-	repo := &MockPersonRepository{}
-	person := &domain.Person{
-		Name:    "John",
-		Surname: "Doe",
-	}
-	repo.On("Create", person).Return(nil)
-	err := repo.Create(ctx, person)
-	repo.AssertCalled(t, "Create", person)
-	assert.NoError(t, err)
+	db, mock, _ := sqlmock.New()
 
-	repo.On("Create", person).Return(fmt.Errorf("database error")) // Error case
-	err = repo.Create(ctx, person)
+	gormDB, _ := gorm.Open(
+		postgres.New(postgres.Config{DriverName: "postgres", Conn: db}))
+	repo := NewPersonRepository(&database.GORM{Gorm: gormDB})
+
+	// mock.ExpectQuery("DELETE FROM persons").WithArgs(1).WillReturnError(nil)
+	mock.ExpectBegin()
+
+	// mock.ExpectQuery("DELETE FROM \"person\" WHERE \"person\".\"id\" = $1").WithArgs(1,1).WillReturnError(nil)
+
+	mock.ExpectExec("INSERT INTO persons (name, surname) VALUES ($1,$2) RETURNING id").
+		WithArgs("John", "Doe").
+		WillReturnResult(sqlmock.NewResult(1, 1))
+	// mock.ExpectRollback()
+	// 		mock.ExpectCommit()
+
+	repo.Create(ctx, &domain.Person{Name: "John", Surname: "Doe"})
+}
+
+func TestDelete(t *testing.T) {
+	var err error
+	ctx := context.Background()
+	logger.MustConfigLogger(&logger.Config{
+		Encoding:         "json",
+		Level:            "debug",
+		OutputPaths:      []string{"stdout"},
+		ErrorOutputPaths: []string{"stderr"},
+	})
+	db, mock, _ := sqlmock.New()
+
+	gormDB, _ := gorm.Open(
+		postgres.New(
+			postgres.Config{DriverName: "postgres", Conn: db}),
+		&gorm.Config{NamingStrategy: schema.NamingStrategy{SingularTable: true}})
+
+	repo := NewPersonRepository(&database.GORM{Gorm: gormDB})
+
+	mock.ExpectBegin()
+	mock.ExpectExec("DELETE FROM \"persons\" WHERE \"persons\".\"id\" = (.+)").
+		WithArgs(1).
+		WillReturnResult(driver.RowsAffected(1))
+	mock.ExpectCommit()
+	err = repo.Delete(ctx, 1)
 	assert.Error(t, err)
-	assert.EqualError(t, err, "database error")
+
+	mock.ExpectBegin()
+	mock.ExpectExec("DELETE FROM \"persons\" WHERE \"persons\".\"id\" = (.+)").
+		WithArgs(99).WillReturnResult(driver.ResultNoRows)
+	mock.ExpectCommit()
+	err = repo.Delete(ctx, 99)
+	assert.Error(t, err)
+
 }

@@ -9,23 +9,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Summary		Get a person
-// @Description	Get a person from database
-// @Tags			Person
-// @Accept			json
-// @Produce		json
-// @Param			id		query		int		true	"Id"
-// @Param			name	query		string	false	"Name"
-// @Param			surname	query		string	false	"Surname"
-// @Param			age		query		int		false	"Age"
-// @Param			gender	query		string	false	"Gender"
-// @Param			country	query		string	false	"Country"
-// @Param			limit	query		int		false	"Max records count"
-// @Success		200		{object}	domain.Person
-// @Failure		400		{object}	handlers.ErrorResponce
-// @Failure		404
-// @Failure		500		{object}	handlers.ErrorResponce
-// @Router			/person [get]
+//	@Summary		Get a person
+//	@Description	Get a person from database
+//	@Tags			Person
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		query		int		false	"Id"
+//	@Param			name	query		string	false	"Name"
+//	@Param			surname	query		string	false	"Surname"
+//	@Param			age		query		int		false	"Age"
+//	@Param			gender	query		string	false	"Gender"
+//	@Param			country	query		string	false	"Country"
+//	@Param			limit	query		int		false	"Max records count"
+//	@Success		200		{object}	domain.Person
+//	@Failure		400		{object}	handlers.ErrorResponce
+//	@Failure		404
+//	@Failure		500	{object}	handlers.ErrorResponce
+//	@Router			/person [get]
 func (h *PersonHandler) Get(ctx *gin.Context) {
 	filters := make(map[string]interface{})
 	var err error
@@ -38,18 +38,16 @@ func (h *PersonHandler) Get(ctx *gin.Context) {
 	limitReq := ctx.Query("limit")
 	var limit int64
 
-	if id := intParse(ctx, idReq); id > 0 {
-		filters["id"] = id
+	if n := intParse(ctx, idReq); n > 0 {
+		filters["id"] = n
+	}
+	if n := intParse(ctx, ageReq); n != 0 {
+		filters["age"] = n
+	}
+	if n := intParse(ctx, limitReq); n <= 0 {
+		limit = -1
 	} else {
-		ctx.JSON(http.StatusBadRequest,
-			handlers.ErrorResponce{Message: "Incorrect Id"})
-		return
-	}
-	if age := intParse(ctx, ageReq); age != 0 {
-		filters["age"] = age
-	}
-	if limit := intParse(ctx, limitReq); limit != 0 {
-		filters["limit"] = limit
+		limit = n
 	}
 	if name != "" {
 		filters["name"] = name
@@ -83,11 +81,11 @@ func intParse(ctx *gin.Context, in string) int64 {
 	if in == "" {
 		return 0
 	}
-	id, err := strconv.ParseInt(in, 10, 64)
+	n, err := strconv.ParseInt(in, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
 			handlers.ErrorResponce{Message: "Failed to parse request", Error: err})
 		return 0
 	}
-	return id
+	return n
 }

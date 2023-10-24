@@ -20,4 +20,5 @@ func MustConfigLogger(cfg *Config) {
 	if err != nil {
 		panic(err)
 	}
+	Logger.Debug("Succesful config logger")
 }

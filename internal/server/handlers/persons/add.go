@@ -8,6 +8,7 @@ import (
 	"person-predicator/internal/server/handlers"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type AddPersonRequest struct {
@@ -38,23 +39,25 @@ func (h *PersonHandler) Add(ctx *gin.Context) {
 
 	age, err := getAge(req.Name)
 	if err != nil {
+		logger.Logger.Error("age not founded", zap.Error(err))
 		ctx.JSON(http.StatusBadGateway,
 			handlers.ErrorResponce{Message: "Failed to get age predict", Error: err})
+		return
 	}
 	gender, err := getGender(req.Name)
 	if err != nil {
+		logger.Logger.Error("gender not founded", zap.Error(err))
 		ctx.JSON(http.StatusBadGateway,
 			handlers.ErrorResponce{Message: "Failed to get gender predict", Error: err})
+		return
 	}
 	country, err := getCountry(req.Name)
 	if err != nil {
+		logger.Logger.Error("country not founded", zap.Error(err))
 		ctx.JSON(http.StatusBadGateway,
 			handlers.ErrorResponce{Message: "Failed to get country predict", Error: err})
+		return
 	}
-
-	// age := 42
-	// gender := "male"
-	// country := "RU"
 
 	_, err = h.service.NewPerson(ctx, req.Name, req.Surname, req.Patronymic, age, gender, country)
 	if err != nil {

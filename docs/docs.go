@@ -86,6 +86,9 @@ const docTemplate = `{
                             "$ref": "#/definitions/handlers.ErrorResponce"
                         }
                     },
+                    "404": {
+                        "description": "Not Found"
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {

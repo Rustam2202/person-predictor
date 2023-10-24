@@ -26,10 +26,10 @@ func NewHTTP(cfg *Config, ph *persons.PersonHandler) *HTTP {
 	return &HTTP{cfg: cfg, personHandler: ph}
 }
 
-// @title		Device Manager API
-// @version	1.0
-// @description
-// @BasePath
+//	@title		Device Manager API
+//	@version	1.0
+//	@description
+//	@BasePath
 func (s *HTTP) StartHTTP(ctx context.Context, wg *sync.WaitGroup) {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/"

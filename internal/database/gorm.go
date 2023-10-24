@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"person-predicator/internal/domain"
+	"person-predicator/internal/logger"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -19,9 +19,6 @@ func MustConnectToGormPostgres(cfg *Config) *GORM {
 	if err != nil {
 		panic(err)
 	}
-	err = db.AutoMigrate(&domain.Person{})
-	if err != nil {
-		panic(err)
-	}
+	logger.Logger.Debug("Succesful connection to database")
 	return &GORM{Gorm: db}
 }
