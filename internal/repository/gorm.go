@@ -19,7 +19,10 @@ func NewPersonRepository(db *database.GORM) *PersonRepository {
 }
 
 func (r *PersonRepository) Create(ctx context.Context, person *domain.Person) error {
-	result := r.Db.Gorm.WithContext(ctx).Table(r.personTable).Create(person)
+	result := r.Db.Gorm.
+		WithContext(ctx).
+		Table(r.personTable).
+		Create(person)
 	if err := result.Error; err != nil {
 		logger.Logger.Error("failed to add person to database", zap.Error(err))
 		return err
@@ -34,7 +37,12 @@ func (r *PersonRepository) Get(ctx context.Context,
 	if limit <= 0 {
 		limit = -1
 	}
-	result := r.Db.Gorm.Limit(limit).WithContext(ctx).Table(r.personTable).Where(filters).Find(&persons)
+	result := r.Db.Gorm.
+		WithContext(ctx).
+		Table(r.personTable).
+		Where(filters).
+		Limit(limit).
+		Find(&persons)
 	if err := result.Error; err != nil {
 		logger.Logger.Error("failed to get person from database", zap.Error(err))
 		return nil, err
@@ -44,7 +52,11 @@ func (r *PersonRepository) Get(ctx context.Context,
 }
 
 func (r *PersonRepository) Update(ctx context.Context, person *domain.Person) error {
-	result := r.Db.Gorm.WithContext(ctx).Table(r.personTable).Model(&domain.Person{Id: person.Id}).Updates(person)
+	result := r.Db.Gorm.
+		WithContext(ctx).
+		Table(r.personTable).
+		Model(domain.Person{Id: person.Id}).
+		Updates(domain.Person{Name: person.Name})
 	if err := result.Error; err != nil {
 		logger.Logger.Error("failed to update person from database", zap.Error(err))
 		return err
@@ -58,7 +70,10 @@ func (r *PersonRepository) Update(ctx context.Context, person *domain.Person) er
 }
 
 func (r *PersonRepository) Delete(ctx context.Context, id int64) error {
-	result := r.Db.Gorm.WithContext(ctx).Table(r.personTable).Delete(&domain.Person{Id: id})
+	result := r.Db.Gorm.
+		WithContext(ctx).
+		Table(r.personTable).
+		Delete(&domain.Person{Id: id})
 	if err := result.Error; err != nil {
 		logger.Logger.Error("failed to delete person from database", zap.Error(err))
 		return err

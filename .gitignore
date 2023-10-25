@@ -1,3 +1,0 @@
-internal/repository/gorm_test.go
-internal/server/handlers/persons/delete_test.go
-migrations/.DS_Store
